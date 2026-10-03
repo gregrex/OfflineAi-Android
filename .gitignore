@@ -1,0 +1,32 @@
+# Built application files
+*.apk
+*.aab
+*.aar
+
+# Large model binaries (>100MB, download via download_model.sh)
+*.gguf
+app/src/main/assets/models/
+
+# Gradle and build caches
+.gradle/
+build/
+app/build/
+app/.cxx/
+
+# Local configuration
+local.properties
+.DS_Store
+
+# Android Studio / IntelliJ IDEA
+.idea/
+*.iml
+.navigation/
+captures/
+.externalNativeBuild/
+
+# Native intermediate build files
+*.pyc
+*.obj
+*.o
+*.a
+*.so

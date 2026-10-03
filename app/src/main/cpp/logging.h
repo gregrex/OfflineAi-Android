@@ -1,0 +1,34 @@
+#pragma once
+#include <android/log.h>
+
+#ifndef LOG_TAG
+#define LOG_TAG "OfflineAI"
+#endif
+
+#ifndef LOG_MIN_LEVEL
+#if defined(NDEBUG)
+#define LOG_MIN_LEVEL ANDROID_LOG_INFO
+#else
+#define LOG_MIN_LEVEL ANDROID_LOG_VERBOSE
+#endif
+#endif
+
+static inline int ai_should_log(int prio) {
+    return prio >= LOG_MIN_LEVEL;
+}
+
+#if LOG_MIN_LEVEL <= ANDROID_LOG_VERBOSE
+#define LOGv(...) do { if (ai_should_log(ANDROID_LOG_VERBOSE)) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__); } while (0)
+#else
+#define LOGv(...) ((void)0)
+#endif
+
+#if LOG_MIN_LEVEL <= ANDROID_LOG_DEBUG
+#define LOGd(...) do { if (ai_should_log(ANDROID_LOG_DEBUG)) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__); } while (0)
+#else
+#define LOGd(...) ((void)0)
+#endif
+
+#define LOGi(...)   do { if (ai_should_log(ANDROID_LOG_INFO )) __android_log_print(ANDROID_LOG_INFO , LOG_TAG, __VA_ARGS__); } while (0)
+#define LOGw(...)   do { if (ai_should_log(ANDROID_LOG_WARN )) __android_log_print(ANDROID_LOG_WARN , LOG_TAG, __VA_ARGS__); } while (0)
+#define LOGe(...)   do { if (ai_should_log(ANDROID_LOG_ERROR)) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__); } while (0)
