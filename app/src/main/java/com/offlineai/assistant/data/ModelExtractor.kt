@@ -21,16 +21,16 @@ object ModelExtractor {
         if (!targetDir.exists()) {
             targetDir.mkdirs()
         }
-        val targetFile = File(targetDir, TARGET_MODEL_NAME)
-
-        // Sprawdź czy plik już istnieje i ma rozmiar > 10MB
-        if (targetFile.exists() && targetFile.length() > 10 * 1024 * 1024) {
-            Log.i(TAG, "Model already exists at: ${targetFile.absolutePath} (${targetFile.length()} bytes)")
+        // Opcja 1: Sprawdź czy użytkownik lub skrypt wgrał nowszy model do pamięci zewnętrznej aplikacji
+        val extDir = context.getExternalFilesDir("models")
+        val extModel = if (extDir != null) File(extDir, TARGET_MODEL_NAME) else null
+        if (extModel != null && extModel.exists() && extModel.length() > 50 * 1024 * 1024) {
+            Log.i(TAG, "Using external model override from: ${extModel.absolutePath} (${extModel.length()} bytes)")
             onProgress(1.0f)
-            return@withContext targetFile
+            return@withContext extModel
         }
 
-        Log.i(TAG, "Extracting model from assets to ${targetFile.absolutePath}...")
+        val targetFile = File(targetDir, TARGET_MODEL_NAME)
         val assetManager = context.assets
 
         // Pobierz rozmiar z deskryptora zasobu, jeśli dostępny
@@ -39,6 +39,20 @@ object ModelExtractor {
         } catch (e: Exception) {
             -1L
         }
+
+        // Sprawdz czy plik juz istnieje i ma prawidlowy rozmiar
+        if (targetFile.exists() && targetFile.length() > 10 * 1024 * 1024) {
+            if (expectedSize <= 0 || targetFile.length() == expectedSize) {
+                Log.i(TAG, "Model already exists and size matches: ${targetFile.absolutePath} (${targetFile.length()} bytes)")
+                onProgress(1.0f)
+                return@withContext targetFile
+            } else {
+                Log.i(TAG, "Model size mismatch (found ${targetFile.length()}, expected $expectedSize). Overwriting with new model...")
+                targetFile.delete()
+            }
+        }
+
+        Log.i(TAG, "Extracting model from assets to ${targetFile.absolutePath}...")
 
         assetManager.open(ASSET_MODEL_PATH).use { inputStream: InputStream ->
             FileOutputStream(targetFile).use { outputStream ->
@@ -63,11 +77,21 @@ object ModelExtractor {
     }
 
     fun isModelExtracted(context: Context): Boolean {
+        val extDir = context.getExternalFilesDir("models")
+        val extModel = if (extDir != null) File(extDir, TARGET_MODEL_NAME) else null
+        if (extModel != null && extModel.exists() && extModel.length() > 50 * 1024 * 1024) {
+            return true
+        }
         val targetFile = File(File(context.filesDir, "models"), TARGET_MODEL_NAME)
         return targetFile.exists() && targetFile.length() > 10 * 1024 * 1024
     }
 
     fun getExtractedModelFile(context: Context): File {
+        val extDir = context.getExternalFilesDir("models")
+        val extModel = if (extDir != null) File(extDir, TARGET_MODEL_NAME) else null
+        if (extModel != null && extModel.exists() && extModel.length() > 50 * 1024 * 1024) {
+            return extModel
+        }
         return File(File(context.filesDir, "models"), TARGET_MODEL_NAME)
     }
 }

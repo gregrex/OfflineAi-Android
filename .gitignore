@@ -35,3 +35,5 @@ captures/
 *.jsonl
 lora_qwen_agriculture/
 merged_qwen_agriculture/
+*.png
+screen_*.png

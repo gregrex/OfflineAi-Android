@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -e
 
-MODEL_URL="https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q4_k_m.gguf"
+MODEL_URL="https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q4_k_m.gguf"
 OUTPUT_DIR="app/src/main/assets/models"
 OUTPUT_FILE="$OUTPUT_DIR/llm_model.gguf"
 
 mkdir -p "$OUTPUT_DIR"
 
-echo "=== Pobieranie modelu Qwen2.5-0.5B-Instruct GGUF ==="
+echo "=== Pobieranie uaktualnionego modelu Qwen2.5-1.5B-Instruct GGUF ==="
 echo "URL: $MODEL_URL"
 echo "Docelowy plik: $OUTPUT_FILE"
 
