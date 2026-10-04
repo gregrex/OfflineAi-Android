@@ -30,3 +30,8 @@ captures/
 *.o
 *.a
 *.so
+
+# Generated large datasets
+*.jsonl
+lora_qwen_agriculture/
+merged_qwen_agriculture/
